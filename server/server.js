@@ -4,7 +4,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const publicPath = path.join(__dirname, '../public');
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 
 var app = express();
 var server = http.createServer(app);
@@ -12,7 +12,17 @@ var io = socketIO(server);
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-  console.log('new user connected');
+  console.log('New user connected');
+
+  socket.emit('newMessage', {
+    from: 'gregor@example.com',
+    text: 'Hello this is a message',
+    createdAt: 1234
+  });
+
+  socket.on('createMessage', (newMessage) => {
+    console.log('createMessage', newMessage);
+  });
 
   socket.on('disconnect', () => {
     console.log('Client Disconnected');
